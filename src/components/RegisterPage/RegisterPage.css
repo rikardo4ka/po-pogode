@@ -1,0 +1,87 @@
+
+.reg-containter{
+    display: flex;
+    justify-content: space-around;
+    font-family: 'Inter',serif;
+  }
+  .reg-bg {
+    width: 50vw;
+    height: 50vh;
+    background-size: contain; /* сохраняет пропорции */
+    background-position: center; /* центрирует */
+    
+  }
+  .reg-content{
+    margin: 180px 216px;
+  }
+  
+  .reg-qa, .reg-welcome, .reg-text{
+    font-weight: 500;
+    font-size: 20px;
+  }
+  .reg-qa{
+    align-items: left;
+    margin-left: 200px;
+    margin-bottom: 70px;
+  }
+  .reg-answer-pw, .reg-answer-reg{
+    color: #4A84D9;
+    text-decoration: none;
+  }
+  
+  .reg-title{
+    font-size: 64px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+  
+  input {
+    width: 559px;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 30px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .reg-input{
+    display: flex;
+    flex-direction: column;
+  
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .reg-welcome{
+    margin-top: 51px;
+  }
+  
+  .reg-text, .reg-text-remem{
+    margin: 32px 0 17px 0;
+  }
+  
+  .reg-button{
+    margin-left: 100px;
+    display: inline-block;
+    width: 403px;
+    height: 83px;
+    background: linear-gradient(90deg, #000000 0%, #AEA9A0 34%);
+    color: white;
+    font-weight: 400;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 43px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 17px 64px;
+    margin-top: 60px;
+  }

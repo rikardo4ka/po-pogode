@@ -1,38 +1,412 @@
-.App {
-  text-align: center;
+/* Общие стили */
+.container{
+  margin: 0 20px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.header{
+  margin: 0 50px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body{
+  margin: 0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Основной контейнер */
+.main-page {
+  /* width: 1646px;
+  height: 1054px; */
+  /* position: relative; */
+}
+.header-logo {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+}
+
+.header-line{
+  display: flex;
+  margin-top: 24px;
+  align-items: center;
+  justify-content:space-between;
+  margin-bottom: 20px;
+}
+
+.site-name {
+  font-size: 24px;
+  font-weight: 800;
+  color: #000;
+}
+
+.login-button {
+  width: 232px;
+  height: 64px;
+  background-color: #000;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-family: 'Inter',serif;
+  font-weight: 400;
+  font-size: 24px;
+  transition: all 0.3s;
+}
+
+.login-button:hover {
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+.header-bg{
+  position: absolute;
+  background-repeat: no-repeat;
+  z-index: 0;
+  margin-left: 860px;
+}
+.header-content{
+  margin-top: 100px;
+  z-index: 1;
+  position: relative;
+}
+
+.questions-block {
+  font-size: 80px;
+  font-weight: 600;
+  margin-bottom: 60px;
+  font-family: 'Inter', sans-serif;
+}
+
+.main-button, .ep-button{
+  margin-left: 100px;
+  display: inline-block;
+  width: 403px;
+  height: 83px;
+  background: linear-gradient(90deg, #000000 0%, #609DDA 63%);
+  color: white;
+  font-weight: 400;
+  font-size: 24px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 43px;
+  border: none;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  transition: all 0.3s ease;
+  padding: 17px 64px;
+  margin-bottom: 37px;
+}
+
+.main-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.header-people{
+}
+
+/* Адаптивность */
+@media (max-width: 1700px) {
+  .main-container {
+      transform: scale(0.8);
+  }
+}
+
+@media (max-width: 1400px) {
+  .main-container {
+      transform: scale(0.7);
+  }
+}
+
+/* ------------------------------------ вторая страница */
+/* Анимации */
+@keyframes flipOut {
+  from { transform: rotateY(0); opacity: 1; }
+  to { transform: rotateY(90deg); opacity: 0; }
+}
+
+@keyframes flipIn {
+  from { transform: rotateY(90deg); opacity: 0; }
+  to { transform: rotateY(0); opacity: 1; }
+}
+
+/* Страницы */
+.main-page, .weather-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.weather-page {
+  background: white;
+  overflow-y: auto;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Стили для страницы прогноза */
+.weather-container {
+  max-width: 800px;
+  /* margin: 0 auto; */
+  /* padding: 20px; */
+}
+
+.calendar {
+  margin: 20px 0;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.day {
+  text-align: center;
+  padding: 10px;
+}
+
+.review {
+  margin: 20px 0;
+  padding: 15px;
+  border-radius: 10px;
+  background: #f8f9fa;
+}
+
+.try-button {
+  background: linear-gradient(90deg, #000000 0%, #609DDA 63%);
   color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 18px;
+  margin: 20px 0;
+  cursor: pointer;
+}
+/* ---------------------------------------------------------------------- */
+
+.ep-containter{
+  display: flex;
+  font-family: 'Inter',serif;
+}
+.ep-bg {
+  width: 50vw;
+  height: 50vh;
+  background-size: contain; /* сохраняет пропорции */
+  background-position: center; /* центрирует */
+}
+.ep-content{
+  margin: 207px 150px;
 }
 
-.App-link {
-  color: #61dafb;
+.ep-qa, .ep-welcome, .ep-text{
+  font-weight: 500;
+  font-size: 20px;
+}
+.ep-qa{
+  align-items: left;
+  margin-left: 200px;
+  margin-bottom: 70px;
+}
+.ep-answer-pw, .ep-answer-reg{
+  color: #4A84D9;
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.ep-title{
+  font-size: 64px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+input {
+  width: 559px;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 30px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.ep-input{
+  display: flex;
+  flex-direction: column;
+
+}
+
+input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.ep-welcome{
+  margin-top: 51px;
+}
+
+.ep-text, .ep-text-remem{
+  margin: 32px 0 17px 0;
+}
+.custom-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none; /* Запрещаем выделение текста */
+  padding: 4px 8px; /* Уменьшаем отступы */
+}
+
+.radio-input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.radio-mark {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.radio-input:checked + .radio-mark {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.radio-input:checked + .radio-mark::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+
+.radio-text {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.ep-text-remem{
+  margin-right: 235px;
+}
+
+/* ---------------------------------------------------------- */
+
+.reg-containter{
+  display: flex;
+  justify-content: space-around;
+  font-family: 'Inter',serif;
+}
+.reg-bg {
+  width: 50vw;
+  height: 50vh;
+  background-size: contain; /* сохраняет пропорции */
+  background-position: center; /* центрирует */
+  
+}
+.reg-content{
+  margin: 180px 216px;
+}
+
+.reg-qa, .reg-welcome, .reg-text{
+  font-weight: 500;
+  font-size: 20px;
+}
+.reg-qa{
+  align-items: left;
+  margin-left: 200px;
+  margin-bottom: 70px;
+}
+.reg-answer-pw, .reg-answer-reg{
+  color: #4A84D9;
+  text-decoration: none;
+}
+
+.reg-title{
+  font-size: 64px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+input {
+  width: 559px;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 30px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.reg-input{
+  display: flex;
+  flex-direction: column;
+
+}
+
+input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.reg-welcome{
+  margin-top: 51px;
+}
+
+.reg-text, .reg-text-remem{
+  margin: 32px 0 17px 0;
+}
+
+.reg-button{
+  margin-left: 100px;
+  display: inline-block;
+  width: 403px;
+  height: 83px;
+  background: linear-gradient(90deg, #000000 0%, #AEA9A0 34%);
+  color: white;
+  font-weight: 400;
+  font-size: 24px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 43px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 17px 64px;
+  margin-top: 60px;
+}
+
+/* Анимация исчезновения */
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+/* Анимация появления */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Применяем анимации при смене маршрута */
+.page-transition {
+  animation: fadeIn 0.5s forwards;
 }

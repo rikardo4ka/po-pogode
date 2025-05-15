@@ -1,0 +1,118 @@
+/* Общие стили */
+.container{
+    margin: 0 20px;
+  }
+  
+  .header{
+    margin: 0 50px;
+  }
+  
+  body{
+    margin: 0;
+  }
+  /* Основной контейнер */
+  .main-page {
+    /* width: 1646px;
+    height: 1054px; */
+    /* position: relative; */
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header-line{
+    display: flex;
+    margin-top: 24px;
+    align-items: center;
+    justify-content:space-between;
+    margin-bottom: 20px;
+  }
+  
+  .site-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: #000;
+  }
+  
+  .login-button {
+    width: 232px;
+    height: 64px;
+    background-color: #000;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'Inter',serif;
+    font-weight: 400;
+    font-size: 24px;
+    transition: all 0.3s;
+  }
+  
+  .login-button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
+  
+  .header-bg{
+    position: absolute;
+    background-repeat: no-repeat;
+    z-index: 0;
+    margin-left: 860px;
+  }
+  .header-content{
+    margin-top: 100px;
+    z-index: 1;
+    position: relative;
+  }
+  
+  .questions-block {
+    font-size: 80px;
+    font-weight: 600;
+    margin-bottom: 60px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .main-button, .ep-button{
+    margin-left: 100px;
+    display: inline-block;
+    width: 403px;
+    height: 83px;
+    background: linear-gradient(90deg, #000000 0%, #609DDA 63%);
+    color: white;
+    font-weight: 400;
+    font-size: 24px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 43px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 17px 64px;
+    margin-bottom: 37px;
+  }
+  
+  .main-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .header-people{
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 1700px) {
+    .main-container {
+        transform: scale(0.8);
+    }
+  }
+  
+  @media (max-width: 1400px) {
+    .main-container {
+        transform: scale(0.7);
+    }
+  }
+  

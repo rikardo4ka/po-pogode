@@ -1,0 +1,114 @@
+.ep-containter{
+    display: flex;
+    font-family: 'Inter',serif;
+  }
+  .ep-bg {
+    width: 50vw;
+    height: 50vh;
+    background-size: contain; /* сохраняет пропорции */
+    background-position: center; /* центрирует */
+  }
+  .ep-content{
+    margin: 207px 150px;
+  }
+  
+  .ep-qa, .ep-welcome, .ep-text{
+    font-weight: 500;
+    font-size: 20px;
+  }
+  .ep-qa{
+    align-items: left;
+    margin-left: 200px;
+    margin-bottom: 70px;
+  }
+  .ep-answer-pw, .ep-answer-reg{
+    color: #4A84D9;
+    text-decoration: none;
+  }
+  
+  .ep-title{
+    font-size: 64px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+  
+  input {
+    width: 559px;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 30px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .ep-input{
+    display: flex;
+    flex-direction: column;
+  
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  .ep-welcome{
+    margin-top: 51px;
+  }
+  
+  .ep-text, .ep-text-remem{
+    margin: 32px 0 17px 0;
+  }
+  .custom-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none; /* Запрещаем выделение текста */
+    padding: 4px 8px; /* Уменьшаем отступы */
+  }
+  
+  .radio-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+  
+  .radio-mark {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+  
+  .radio-input:checked + .radio-mark {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .radio-input:checked + .radio-mark::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+  }
+  
+  .radio-text {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .ep-text-remem{
+    margin-right: 235px;
+  }
