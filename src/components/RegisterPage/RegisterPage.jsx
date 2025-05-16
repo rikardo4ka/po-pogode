@@ -22,7 +22,7 @@ function RegisterPage() {
     console.log('Отправка данных:', formData);
     
     try {
-      // Явно указываем метод POST
+
       const response = await fetch('http://localhost:8080/api/register', {
         method: 'POST',
         headers: { 
@@ -32,13 +32,10 @@ function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          sex: formData.sex // необязательное поле
+          sex: formData.sex 
         }),
       });
-
-      console.log('Статус ответа:', response.status);
       
-      // Обрабатываем случай когда сервер возвращает 200 OK
       if (response.ok) {
         const data = await response.text();
         alert(data);
@@ -46,13 +43,13 @@ function RegisterPage() {
         return;
       }
 
-      // Обрабатываем ошибки валидации (400 Bad Request)
+      
       if (response.status === 400) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
 
-      // Обрабатываем другие ошибки
+     
       throw new Error(`HTTP error! status: ${response.status}`);
 
     } catch (error) {
@@ -64,7 +61,7 @@ function RegisterPage() {
   return (
     <div className="reg-page">
       <div className="reg-containter">
-        {/* Добавляем novalidate для отключения браузерной валидации */}
+  
         <form 
           onSubmit={handleRegister} 
           className="reg-content"
@@ -128,7 +125,7 @@ function RegisterPage() {
           <button 
             className="reg-button" 
             type="submit"
-            // Добавляем индикатор загрузки
+    
             disabled={!formData.name || !formData.email || !formData.password}
           >
             ЗАРЕГИСТРИРОВАТЬСЯ
