@@ -1,8 +1,64 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './RegisterPage.css';
+import './RegisterPage.css';
 
 function RegisterPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    sex: '',
+    email: '',
+    password: ''
+  });
+
+  const handleInputChange = (e) => {
+    setFormData({ 
+      ...formData, 
+      [e.target.name]: e.target.value 
+    });
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    console.log('Отправка данных:', formData);
+    
+    try {
+
+      const response = await fetch('http://localhost:8080/api/register', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          sex: formData.sex 
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.text();
+        alert(data);
+        window.location.href = "/login";
+        return;
+      }
+
+      
+      if (response.status === 400) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+
+     
+      throw new Error(`HTTP error! status: ${response.status}`);
+
+    } catch (error) {
+      console.error('Ошибка регистрации:', error);
+      alert(error.message);
+    }
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     sex: '',
@@ -64,12 +120,7 @@ function RegisterPage() {
   return (
     <div className="reg-page">
       <div className="reg-containter">
-        {/* Добавляем novalidate для отключения браузерной валидации */}
-        <form 
-          onSubmit={handleRegister} 
-          className="reg-content"
-          noValidate
-        >
+        <div className="reg-content">
           <span className="reg-title">РЕГИСТРАЦИЯ <br /></span>
           <span className="reg-welcome">* обязательные поля для заполнения</span>
           
@@ -125,13 +176,8 @@ function RegisterPage() {
             />
           </div>
           
-          <button 
-            className="reg-button" 
-            type="submit"
-            // Добавляем индикатор загрузки
-            disabled={!formData.name || !formData.email || !formData.password}
-          >
-            ЗАРЕГИСТРИРОВАТЬСЯ
+          <button className="reg-button" id="flipButton3">
+            ЗАРЕГИСТИРОВАТЬСЯ
           </button>
 
           <div className="reg-login-link">

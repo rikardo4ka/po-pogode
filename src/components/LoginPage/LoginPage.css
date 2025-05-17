@@ -112,3 +112,14 @@
   .ep-text-remem{
     margin-right: 235px;
   }
+  .error-message {
+  color: #ff3333;
+  margin: 10px 0;
+  text-align: center;
+  font-size: 14px;
+}
+
+.ep-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
