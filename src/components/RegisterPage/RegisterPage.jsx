@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './RegisterPage.css';
-import './RegisterPage.css';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -23,7 +22,6 @@ function RegisterPage() {
     console.log('Отправка данных:', formData);
     
     try {
-
       const response = await fetch('http://localhost:8080/api/register', {
         method: 'POST',
         headers: { 
@@ -43,72 +41,12 @@ function RegisterPage() {
         window.location.href = "/login";
         return;
       }
-
       
       if (response.status === 400) {
         const errorText = await response.text();
         throw new Error(errorText);
       }
-
      
-      throw new Error(`HTTP error! status: ${response.status}`);
-
-    } catch (error) {
-      console.error('Ошибка регистрации:', error);
-      alert(error.message);
-    }
-  };
-
-  const [formData, setFormData] = useState({
-    name: '',
-    sex: '',
-    email: '',
-    password: ''
-  });
-
-  const handleInputChange = (e) => {
-    setFormData({ 
-      ...formData, 
-      [e.target.name]: e.target.value 
-    });
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    console.log('Отправка данных:', formData);
-    
-    try {
-      // Явно указываем метод POST
-      const response = await fetch('http://localhost:8080/api/register', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          sex: formData.sex // необязательное поле
-        }),
-      });
-
-      console.log('Статус ответа:', response.status);
-      
-      // Обрабатываем случай когда сервер возвращает 200 OK
-      if (response.ok) {
-        const data = await response.text();
-        alert(data);
-        window.location.href = "/login";
-        return;
-      }
-
-      // Обрабатываем ошибки валидации (400 Bad Request)
-      if (response.status === 400) {
-        const errorText = await response.text();
-        throw new Error(errorText);
-      }
-
-      // Обрабатываем другие ошибки
       throw new Error(`HTTP error! status: ${response.status}`);
 
     } catch (error) {
@@ -120,7 +58,7 @@ function RegisterPage() {
   return (
     <div className="reg-page">
       <div className="reg-containter">
-        <div className="reg-content">
+        <form className="reg-content" onSubmit={handleRegister}>
           <span className="reg-title">РЕГИСТРАЦИЯ <br /></span>
           <span className="reg-welcome">* обязательные поля для заполнения</span>
           
@@ -176,7 +114,7 @@ function RegisterPage() {
             />
           </div>
           
-          <button className="reg-button" id="flipButton3">
+          <button type="submit" className="reg-button" id="flipButton3">
             ЗАРЕГИСТИРОВАТЬСЯ
           </button>
 
