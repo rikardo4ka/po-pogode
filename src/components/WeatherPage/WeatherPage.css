@@ -1,7 +1,9 @@
 .weather-page {
-    max-width: 800px;
+    /* max-width: 800px; */
     font-family: Arial, sans-serif;
     display: flex;
+    height: 100vh;
+  overflow: hidden;
   }
   .weather-bg{
     position: absolute;
@@ -10,7 +12,9 @@
     
   }
 .weather-side{
-  
+  width: 50%;
+  position: relative;
+  overflow: hidden;
   }
   .weather-content{
     margin: 94px 70px 61px 70px;
@@ -127,8 +131,13 @@
     margin: 20px 0;
   }
   
-  .reviews-section {
-    margin-top: 30px;
+  .reviews-side {
+    margin: 52px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
   }
   
   .review {
@@ -137,7 +146,40 @@
     border-radius: 5px;
     margin-bottom: 15px;
   }
+
+  .rev-h-logo {
+    display: flex;
+    align-items: center;
+    margin-right: 400px;
+    margin-left: 160px;
+  }
   
+  .reviews-header{
+    display: flex;
+    /* margin-top: 24px; */
+    align-items: center;
+    justify-content:space-between;
+    /* margin-bottom: 20px; */
+  }
+  
+  .rev-h-button {
+    width: 232px;
+    height: 64px;
+    background-color: #000;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'Inter',serif;
+    font-weight: 400;
+    font-size: 24px;
+    transition: all 0.3s;
+  }
+  
+  .login-button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
   .review-header {
     display: flex;
     justify-content: space-between;
@@ -160,4 +202,29 @@
   
   .error {
     color: #ff3333;
+  }
+
+  .reviews-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+  }
+  
+  /* Стилизация скроллбара */
+  .reviews-scrollable::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .reviews-scrollable::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .reviews-scrollable::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .reviews-scrollable::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }

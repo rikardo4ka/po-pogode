@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './WeatherPage.css';
 
 function WeatherPage() {
+  const navigate = useNavigate();
+
+  const handleLoginClick = () => {
+    const mainContent = document.querySelector('.weather-page');
+    if (mainContent) {
+      mainContent.style.animation = 'fadeOut 0.5s forwards';
+      setTimeout(() => navigate('/login'), 500);
+    }
+  };
+
   const [selectedCity, setSelectedCity] = useState('Voronezh');
   const [selectedDate, setSelectedDate] = useState(new Date().getDate());
   const [weatherData, setWeatherData] = useState(null);
@@ -137,22 +148,34 @@ function WeatherPage() {
         </div>
       </div>
 
-      <div className="reviews-side">
-        <h3>Отзывы</h3>
-        {[1, 2, 3, 4].map(review => (
-          <div key={review} className="review">
-            <div className="review-header">
-              <span className="review-author">Роман ★★★★★★</span>
-              <span className="review-time">16:16</span>
+      <div className="reviews-side-container">
+        <div className="reviews-side">
+          <div className='reviews-header'>
+            <div className="rev-h-logo">
+              <img src="/pic/Логотип.png" alt="Логотип" className="logo" />
             </div>
-            <p className="review-text">
-              Однажды идеально подошла под погоду. Благодаря рекомендациям не замерзла.
-            </p>
-            <p className="review-recommendation">
-              Рекомендацию по погоде: ① куртка, ② шапка, ③ джинсы, ④ ботинки
-            </p>
+            <button className="rev-h-button" onClick={handleLoginClick}>
+              ВОЙТИ
+            </button>
           </div>
-        ))}
+          <h3>Отзывы</h3>
+          <div className="reviews-scrollable">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(review => (
+              <div key={review} className="review">
+                <div className="review-header">
+                  <span className="review-author">Роман ★★★★★★</span>
+                  <span className="review-time">16:16</span>
+                </div>
+                <p className="review-text">
+                  Однажды идеально подошла под погоду. Благодаря рекомендациям не замерзла.
+                </p>
+                <p className="review-recommendation">
+                  Рекомендацию по погоде: ① куртка, ② шапка, ③ джинсы, ④ ботинки
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
