@@ -2,9 +2,110 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './WeatherPage.css';
+import './WeatherRecommendation.css';
+
+function WeatherRecommendation({ onClose }) {
+  const [items, setItems] = useState([
+    { 
+      id: 1, 
+      name: 'Куртка', 
+      checked: false, 
+      icon: process.env.PUBLIC_URL + '/иконки_гардероба/верхняяОдежда.png' 
+    },
+    { 
+      id: 2, 
+      name: 'Свитер', 
+      checked: true, 
+      icon: process.env.PUBLIC_URL + '/иконки_гардероба/Верх.png' 
+    },
+    { 
+      id: 3, 
+      name: 'Джинсы', 
+      checked: false, 
+      icon: process.env.PUBLIC_URL + '/иконки_гардероба/Низ.png' 
+    },
+    { 
+      id: 4, 
+      name: 'Кроссовки или ботинки', 
+      checked: false, 
+      icon: process.env.PUBLIC_URL + '/иконки_гардероба/Обувь.png' 
+    }
+  ]);
+
+  const backgroundImage = process.env.PUBLIC_URL + '/pic/Фон_Образ.png';
+  const logoImage = process.env.PUBLIC_URL + '/pic/Логотип.png';
+
+  const toggleItem = (id) => {
+    setItems(items.map(item => 
+      item.id === id ? { ...item, checked: !item.checked } : item
+    ));
+  };
+
+  return (
+    <div className="recommendation-overlay" style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div className="recommendation-header">
+        <img src={logoImage} alt="Логотип" className="recommendation-logo" />
+      </div>
+      
+      <div className="recommendation-container">
+        <h1 className="recommendation-title">По Погоде</h1>
+        
+        <div className="recommendation-list">
+          <p className="recommendation-subtitle">Рекомендованный образ:</p>
+          
+          <div className="recommendation-items-grid">
+            {items.map(item => (
+              <div 
+                key={item.id} 
+                className={`recommendation-item ${item.checked ? 'selected' : ''}`}
+                onClick={() => toggleItem(item.id)}
+              >
+                <img src={item.icon} alt={item.name} className="item-icon" />
+                <span className="item-name">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="recommendation-tip">
+          <p>Совет: на улице прохладный ветер, лучше взять с собой шарф, чтобы не замерзнуть. Если планируете долго гулять, выберите удобную обувь.</p>
+        </div>
+      </div>
+
+      <div className="recommendation-footer">
+        <button className="close-button" onClick={onClose}>ЗАКРЫТЬ</button>
+        <button className="feedback-button">ОСТАВИТЬ ОТЗЫВ</button>
+      </div>
+    </div>
+  );
+}
 
 function WeatherPage() {
+   const [showRecommendation, setShowRecommendation] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+ useEffect(() => {
+    const authData = localStorage.getItem('authData') || sessionStorage.getItem('authData');
+    setIsLoggedIn(!!authData);
+  }, []);
+
+  const handleProfileClick = () => {
+    setShowProfileMenu(!showProfileMenu);
+  };
+
+  const handleLogout = () => {
+    // Очищаем хранилище
+    localStorage.removeItem('authData');
+    sessionStorage.removeItem('authData');
+    // Обновляем страницу
+    window.location.reload();
+  };
+
+  const handleWardrobeClick = () => {
+    navigate('/wardrobe');
+  };
 
   const handleLoginClick = () => {
     const mainContent = document.querySelector('.weather-page');
@@ -142,21 +243,45 @@ function WeatherPage() {
             </div>
           )}
 
-          <button className="recommendation-button">
-            ПОЛУЧИТЬ РЕКОМЕНДАЦИЮ
+          <button className="recommendation-button" onClick={() => setShowRecommendation(true)}>
+            ПОЛУЧИТЬ<br />РЕКОМЕНДАЦИЮ
           </button>
         </div>
       </div>
 
-      <div className="reviews-side-container">
+       <div className="reviews-side-container">
         <div className="reviews-side">
           <div className='reviews-header'>
             <div className="rev-h-logo">
               <img src="/pic/Логотип.png" alt="Логотип" className="logo" />
             </div>
-            <button className="rev-h-button" onClick={handleLoginClick}>
-              ВОЙТИ
-            </button>
+            {isLoggedIn ? (
+              <div className="profile-container">
+                <img 
+                  src="/pic/Иконка_Профиля.png" 
+                  alt="Профиль" 
+                  className="profile-icon"
+                  onClick={handleProfileClick}
+                />
+                {showProfileMenu && (
+                  <div className="profile-menu">
+                    <div className="profile-menu-item" onClick={() => navigate('/profile')}>
+                      Профиль
+                    </div>
+                    <div className="profile-menu-item" onClick={handleWardrobeClick}>
+                      Гардероб
+                    </div>
+                    <div className="profile-menu-item" onClick={handleLogout}>
+                      Выход
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="rev-h-button" onClick={handleLoginClick}>
+                ВОЙТИ
+              </button>
+            )}
           </div>
           <h3>Отзывы</h3>
           <div className="reviews-scrollable">
@@ -177,6 +302,9 @@ function WeatherPage() {
           </div>
         </div>
       </div>
+      {showRecommendation && (
+        <WeatherRecommendation onClose={() => setShowRecommendation(false)} />
+      )}
     </div>
   );
 }
