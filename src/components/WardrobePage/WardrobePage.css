@@ -1,0 +1,157 @@
+.wardrobe-page {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 0.5s ease;
+  overflow: hidden;
+}
+
+.zoom-effect {
+  transform: scale(1.1);
+  transition: transform 0.5s ease;
+}
+
+.wardrobe-icons-container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.back-button, .save-button{
+  position: absolute;
+  bottom: 100px;
+  width: 80px;
+  height: 80px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s;
+  left: 99px;
+
+}
+
+.back-button:hover,.save-button:hover {
+  transform: scale(1.1);
+}
+
+.save-button {
+  left: 1599px;
+
+}
+
+.wardrobe-icons-container {
+  position: relative;
+  height: calc(100% - 200px);
+  width: 100%;
+}
+
+.wardrobe-icon-button {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s;
+}
+
+.wardrobe-icon-button:hover {
+  transform: scale(1.1);
+}
+
+/* Пример позиционирования иконок - вы можете изменить по своему усмотрению */
+.wardrobe-icon-button:nth-child(1) { top: 278px; right: 214px; }
+.wardrobe-icon-button:nth-child(2) { top: 278px; right: 591px; }
+.wardrobe-icon-button:nth-child(3) { top: 278px; left: 750px; }
+.wardrobe-icon-button:nth-child(4) { bottom: -20px; left: 750px; }
+.wardrobe-icon-button:nth-child(5) { bottom: 210px; left: 750px; }
+.wardrobe-icon-button:nth-child(6) { bottom: -20px; left: 400px; }
+
+.items-selection-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 30px;
+  border-radius: 15px;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.items-title {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.radio-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #333;
+}
+
+.radio-item input {
+  display: none;
+}
+
+.radio-custom {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  margin-right: 10px;
+  position: relative;
+}
+
+.radio-item input:checked + .radio-custom::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background: #333;
+  border-radius: 50%;
+}
+ 
+.add-photo-button {
+  font-family: 'Inter'serif;
+  background: #000;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-photo-button:hover {
+  background: #000;
+  transform: translateY(-2px);
+}
+
+.add-photo-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}

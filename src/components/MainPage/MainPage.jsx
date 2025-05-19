@@ -11,6 +11,10 @@ function MainPage() {  // Убрали export default отсюда
   const handleWeatherClick = () => {
     navigate('/weather');
   };
+
+  const handleWardrobeClick = () => {
+    navigate('/wardrobe');
+  };
   return (
     <div id="mainContent" className="main-page">
       <header className="header">
@@ -19,7 +23,7 @@ function MainPage() {  // Убрали export default отсюда
             <div className="header-logo">
               <img src="/pic/Логотип.png" alt="Логотип" className="logo" />
             </div>
-            <button className="login-button" onClick={handleLoginClick}>
+            <button className="login-button" onClick={handleWardrobeClick}>
               ВОЙТИ
             </button>
           </div>

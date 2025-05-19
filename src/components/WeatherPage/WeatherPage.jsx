@@ -32,6 +32,19 @@ function WeatherRecommendation({ onClose }) {
     }
   ]);
 
+  const [showLoginAlert, setShowLoginAlert] = useState(false);
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem('authData') || !!sessionStorage.getItem('authData');
+
+  const handleFeedbackClick = () => {
+    if (isLoggedIn) {
+      navigate('/feedbackPage');
+      onClose(); // Закрываем модальное окно рекомендаций
+    } else {
+      setShowLoginAlert(true);
+    }
+  };
+
   const backgroundImage = process.env.PUBLIC_URL + '/pic/Фон_Образ.png';
   const logoImage = process.env.PUBLIC_URL + '/pic/Логотип.png';
 
@@ -70,23 +83,53 @@ function WeatherRecommendation({ onClose }) {
         <div className="recommendation-tip">
           <p>Совет: на улице прохладный ветер, лучше взять с собой шарф, чтобы не замерзнуть. Если планируете долго гулять, выберите удобную обувь.</p>
         </div>
+
+        <div className="recommendation-footer">
+          <button className="close-button" onClick={onClose}>ЗАКРЫТЬ</button>
+          <button className="feedback-button" onClick={handleFeedbackClick}>
+            ОСТАВИТЬ ОТЗЫВ
+          </button>
+        </div>
       </div>
 
-      <div className="recommendation-footer">
-        <button className="close-button" onClick={onClose}>ЗАКРЫТЬ</button>
-        <button className="feedback-button">ОСТАВИТЬ ОТЗЫВ</button>
-      </div>
+      {/* Модальное окно с требованием авторизации */}
+      {showLoginAlert && (
+        <div className="login-alert-overlay">
+          <div className="login-alert">
+            <h3>Требуется авторизация</h3>
+            <p>Чтобы оставить отзыв, пожалуйста, войдите в свой аккаунт.</p>
+            <div className="alert-buttons">
+              <button 
+                className="alert-button login"
+                onClick={() => {
+                  setShowLoginAlert(false);
+                  onClose();
+                  navigate('/login');
+                }}
+              >
+                ВОЙТИ
+              </button>
+              <button 
+                className="alert-button cancel"
+                onClick={() => setShowLoginAlert(false)}
+              >
+                ОТМЕНА
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 function WeatherPage() {
-   const [showRecommendation, setShowRecommendation] = useState(false);
+  const [showRecommendation, setShowRecommendation] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
- useEffect(() => {
+  useEffect(() => {
     const authData = localStorage.getItem('authData') || sessionStorage.getItem('authData');
     setIsLoggedIn(!!authData);
   }, []);
@@ -128,6 +171,41 @@ function WeatherPage() {
   };
 
   // Получение данных о погоде
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Обновляем время каждую минуту
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Обновление каждую минуту
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Функция для получения иконки погоды
+  const getWeatherIcon = (condition) => {
+    const weatherIcons = {
+      'ветер': 'ветер.png',
+      'облачно': 'облачно.png',
+      'дождь': 'дождь.png',
+      'пасмурно': 'дождь.png',
+      'снег': 'снег.png',
+      'ясно': 'солнечно.png',
+    };
+
+    // Поиск подходящей иконки
+    const lowerCondition = condition.toLowerCase();
+    for (const [key, icon] of Object.entries(weatherIcons)) {
+      if (lowerCondition.includes(key)) {
+        return process.env.PUBLIC_URL + `/иконки_погоды/${icon}`;
+      }
+    }
+    
+    // Иконка по умолчанию
+    return process.env.PUBLIC_URL + '/иконки_погоды/облачно.png';
+  };
+
+  // Получение данных о погоде (модифицированный useEffect)
   useEffect(() => {
     const API_KEY = '6a93e74d69182916e85c3f13ee1b43ce';
     const { lat, lon } = cities[selectedCity];
@@ -146,7 +224,8 @@ function WeatherPage() {
           wind: `${response.data.wind.speed} м/с`,
           humidity: `${response.data.main.humidity}%`,
           pressure: `${Math.round(response.data.main.pressure * 0.750062)} мм рт.ст.`,
-          date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })
+          date: new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }),
+          icon: getWeatherIcon(response.data.weather[0].description)
         });
       } catch (err) {
         setError(err.message);
@@ -160,17 +239,54 @@ function WeatherPage() {
 
   // Данные для календаря
   const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-  const currentMonth = months[new Date().getMonth()];
   const weekdays = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
-  
-  const calendarDays = [
-    [28, 29, 30, 1, 2, 3, 4],
-    [5, 6, 7, 8, 9, 10, 11],
-    [12, 13, 14, 15, 16, 17, 18],
-    [19, 20, 21, 22, 23, 24, 25],
-    [26, 27, 28, 29, 30, 31, 1 ]
-  ];
 
+  // Функция для генерации календаря
+  const generateCalendar = (year, month) => {
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+    
+    // Корректировка дня недели (пн = 0, вс = 6)
+    const firstDayOfWeek = (firstDay + 6) % 7;
+    
+    const weeks = [];
+    let day = 1;
+    let prevMonthDay = daysInPrevMonth - firstDayOfWeek + 1;
+    
+    for (let i = 0; i < 6; i++) {
+      const week = [];
+      
+      for (let j = 0; j < 7; j++) {
+        if (i === 0 && j < firstDayOfWeek) {
+          // Дни предыдущего месяца
+          week.push(prevMonthDay++);
+        } else if (day > daysInMonth) {
+          // Дни следующего месяца
+          week.push(day - daysInMonth);
+          day++;
+        } else {
+          // Дни текущего месяца
+          week.push(day++);
+        }
+      }
+      
+      weeks.push(week);
+      if (day > daysInMonth) break;
+    }
+    
+    return { weeks, firstDayOfWeek, daysInMonth };
+  };
+
+  // Получаем текущую дату
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  
+  // Генерируем календарь для текущего месяца
+  const { weeks: calendarDays, firstDayOfWeek, daysInMonth } = generateCalendar(currentYear, currentMonth);
+  
+  // Обработчик выбора даты
   const handleDateClick = (day) => {
     if (day) {
       setSelectedDate(day);
@@ -185,7 +301,7 @@ function WeatherPage() {
     <div className="weather-page">
       <div className="weather-side">
         <div className="weather-bg">
-          <img src="/pic/Фон (3).png" alt="" />
+          <img src={process.env.PUBLIC_URL + "/pic/Фон (3).png"} alt="" />
         </div>
         <div className='weather-content'>
           <div className="weather-header">
@@ -206,7 +322,7 @@ function WeatherPage() {
           </div>
 
           <div className="weather-calendar">
-            <div className="calendar-month">{currentMonth}</div>
+            <div className="calendar-month">{months[currentMonth]} {currentYear}</div>
             <div className="calendar-weekdays">
               {weekdays.map(day => (
                 <span key={day} className="weekday">{day}</span>
@@ -215,15 +331,24 @@ function WeatherPage() {
             <div className="calendar-grid">
               {calendarDays.map((week, weekIndex) => (
                 <div key={weekIndex} className="calendar-row">
-                  {week.map((day, dayIndex) => (
-                    <div 
-                      key={dayIndex} 
-                      className={`calendar-day ${day === selectedDate ? 'selected' : ''} ${day ? '' : 'empty'}`}
-                      onClick={() => handleDateClick(day)}
-                    >
-                      {day || ''}
-                    </div>
-                  ))}
+                  {week.map((day, dayIndex) => {
+                    const isCurrentMonth = (
+                      (weekIndex > 0 || dayIndex >= firstDayOfWeek) && 
+                      (weekIndex < calendarDays.length - 1 || day <= daysInMonth)
+                    );
+                    
+                    return (
+                      <div 
+                        key={dayIndex} 
+                        className={`calendar-day 
+                          ${day === selectedDate && isCurrentMonth ? 'selected' : ''} 
+                          ${isCurrentMonth ? '' : 'other-month'}`}
+                        onClick={() => isCurrentMonth && handleDateClick(day)}
+                      >
+                        {day}
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -231,10 +356,28 @@ function WeatherPage() {
 
           {weatherData && (
             <div className="weather-info">
-              <div className="weather-date">{weatherData.date}</div>
-              <div className="temperature">{weatherData.temperature}</div>
+              <div className="weather-header-info">
+                <div className="weather-icon-container">
+                  <img 
+                    src={weatherData.icon} 
+                    alt={weatherData.condition} 
+                    className="weather-icon"
+                  />
+                </div>
+                <div className="weather-temp-time">
+                  <div className="temperature">{weatherData.temperature}</div>
+                  <div className="current-time">
+                    {currentTime.toLocaleTimeString('ru-RU', { 
+                      hour: '2-digit', 
+                      minute: '2-digit',
+                      hour12: false 
+                    })}
+                  </div>
+                </div>
+              </div>
+              
               <div className="weather-details">
-                <p>{weatherData.condition}</p>
+                <p className="weather-condition">{weatherData.condition}</p>
                 <p>Ощущается как {weatherData.feelsLike}</p>
                 <p>Ветер {weatherData.wind}</p>
                 <p>Влажность {weatherData.humidity}</p>
@@ -249,16 +392,16 @@ function WeatherPage() {
         </div>
       </div>
 
-       <div className="reviews-side-container">
+      <div className="reviews-side-container">
         <div className="reviews-side">
           <div className='reviews-header'>
             <div className="rev-h-logo">
-              <img src="/pic/Логотип.png" alt="Логотип" className="logo" />
+              <img src={process.env.PUBLIC_URL + "/pic/Логотип.png"} alt="Логотип" className="logo" />
             </div>
             {isLoggedIn ? (
               <div className="profile-container">
                 <img 
-                  src="/pic/Иконка_Профиля.png" 
+                  src={process.env.PUBLIC_URL + "/pic/Иконка_Профиля.png"} 
                   alt="Профиль" 
                   className="profile-icon"
                   onClick={handleProfileClick}

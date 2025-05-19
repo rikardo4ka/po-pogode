@@ -86,7 +86,77 @@
 .calendar-day.empty {
   visibility: hidden;
 }
+.calendar-day.other-month {
+  color: #ccc;
+  pointer-events: none;
+}
 
+/* Стили для модального окна авторизации */
+.login-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.login-alert {
+  background-color: white;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.login-alert h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.login-alert p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.alert-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.alert-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.alert-button.login {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.alert-button.login:hover {
+  background-color: #45a049;
+}
+
+.alert-button.cancel {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.alert-button.cancel:hover {
+  background-color: #e0e0e0;
+}
 /* Дата в блоке погоды */
 .weather-date {
   font-size: 1rem;
