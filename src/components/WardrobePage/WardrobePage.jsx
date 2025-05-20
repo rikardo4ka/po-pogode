@@ -116,7 +116,7 @@ function WardrobePage() {
   };
 
   const handleAddPhotoClick = () => {
-    fileInputRef.current.click();
+     navigate('/catalog');
   };
 
   const handleFileUpload = (e) => {

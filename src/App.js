@@ -1,11 +1,12 @@
 // App.js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// Убедитесь, что расширения файлов совпадают (.js или .jsx)
 import MainPage from './components/MainPage/MainPage';
-import WeatherPage from './components/WeatherPage/WeatherPage'
+import WeatherPage from './components/WeatherPage/WeatherPage';
 import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import WardrobePage from './components/WardrobePage/WardrobePage';
+import CatalogPage from './components/CatalogPage/CatalogPage';
+
 function App() {
   return (
     <Router>
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
         <Route path="/weather" element={<WeatherPage />} />
         <Route path="/wardrobe" element={<WardrobePage />} />
+        <Route path="/catalog" element={<CatalogPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
