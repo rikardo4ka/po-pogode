@@ -2,26 +2,42 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './WeatherPage.css';
+export const withAuth = (Component) => {
+  return (props) => {
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      if (!token) navigate('/login');
+    }, [navigate]);
+
+    return <Component {...props} />;
+  };
+};
 
 function WeatherPage() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-
+  
   useEffect(() => {
-    const authData = localStorage.getItem('authData') || sessionStorage.getItem('authData');
-    setIsLoggedIn(!!authData);
-  }, []);
+  const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+  setIsLoggedIn(!!token);
+}, []);
+
+
 
   const handleProfileClick = () => {
     setShowProfileMenu(!showProfileMenu);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authData');
-    sessionStorage.removeItem('authData');
-    window.location.reload();
-  };
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('user');
+  sessionStorage.removeItem('authToken');
+  sessionStorage.removeItem('user');
+  navigate('/login');
+};
 
   const handleWardrobeClick = () => {
     navigate('/wardrobe');
@@ -316,4 +332,4 @@ function WeatherPage() {
   );
 }
 
-export default WeatherPage;
+export default withAuth(WeatherPage);

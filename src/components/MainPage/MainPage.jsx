@@ -23,7 +23,7 @@ function MainPage() {  // Убрали export default отсюда
             <div className="header-logo">
               <img src="/pic/Логотип.png" alt="Логотип" className="logo" />
             </div>
-            <button className="login-button" onClick={handleWardrobeClick}>
+            <button className="login-button" onClick={handleLoginClick}>
               ВОЙТИ
             </button>
           </div>

@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './WeatherRecommendation.css';
+export const withAuth = (Component) => {
+  return (props) => {
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      if (!token) navigate('/login');
+    }, [navigate]);
+
+    return <Component {...props} />;
+  };
+};
 
 function WeatherRecommendationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showLoginAlert, setShowLoginAlert] = useState(false);
-  const isLoggedIn = !!localStorage.getItem('authData') || !!sessionStorage.getItem('authData');
+  const isLoggedIn = !!localStorage.getItem('authToken') || !!sessionStorage.getItem('authToken');
   const [temperature, setTemperature] = useState(null);
 
   useEffect(() => {
@@ -178,4 +190,4 @@ function WeatherRecommendationPage() {
   );
 }
 
-export default WeatherRecommendationPage;
+export default withAuth(WeatherRecommendationPage);

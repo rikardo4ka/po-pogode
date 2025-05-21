@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import ModalNoPassword from '../ModalNoPassword/ModalNoPassword';
 import './LoginPage.css';
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -26,42 +27,42 @@ function LoginPage() {
     setLoading(true);
     setError('');
 
-   try {
-    const response = await fetch('http://localhost:8080/api/auth/login', {
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            email: formData.email,
-            password: formData.password
-        }),
-        credentials: 'include'
-    });
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      const responseData = await response.json();
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Ошибка авторизации');
+        throw new Error(responseData.error || 'Ошибка авторизации');
       }
 
-    const responseData = await response.json();
-    if (formData.rememberMe) {
-    localStorage.setItem('authData', JSON.stringify(responseData.user));
-    } else {
-    sessionStorage.setItem('authData', JSON.stringify(responseData.user));
-    }
+      // Сохраняем токен и данные пользователя
+      if (formData.rememberMe) {
+        localStorage.setItem('authToken', responseData.token);
+        localStorage.setItem('user', JSON.stringify(responseData.user));
+      } else {
+        sessionStorage.setItem('authToken', responseData.token);
+        sessionStorage.setItem('user', JSON.stringify(responseData.user));
+      }
 
-      window.location.href = '/'; //НИКУДА АВТОРИЗАЦИЯ НЕ НАПРАВЛЯЕТ 
-
+      // Перенаправляем на защищенный роут
+      navigate('/weather');
 
     } catch (err) {
       console.error('Ошибка авторизации:', err);
       setError(err.message || 'Неверный email или пароль');
-        
     } finally {
       setLoading(false);
     }
-    
   };
 
   const handleOpenModal = () => {
@@ -136,7 +137,7 @@ function LoginPage() {
             </a>
             <ModalNoPassword 
               isOpen={isModalOpen} 
-              onClose={() => setIsModalOpen(false)} 
+              onClose={handleCloseModal} 
             />
             {error && <div className="error-message">{error}</div>}
             <button 

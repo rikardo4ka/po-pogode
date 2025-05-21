@@ -116,17 +116,16 @@ function WardrobePage() {
   };
 
   const handleAddPhotoClick = () => {
-  if (!selectedItem) return;
-  
-  const categoryMap = {
-    0: 'outerwear',
-    1: 'top',
-    2: 'bottom', 
-    3: 'footwear',
-    4: 'headwear',
-    5: 'accessories'
-  };
-  
+    if (!selectedItem) return;
+    
+    const categoryMap = {
+      0: 'OUTERWEAR',
+      1: 'TOP',
+      2: 'BOTTOM',
+      3: 'FOOTWEAR',
+      4: 'HEADWEAR',
+      5: 'ACCESSORIES'
+    };
   navigate('/catalog', { 
     state: { 
       category: categoryMap[currentView.category],

@@ -10,39 +10,42 @@ function CatalogPage() {
   const [photos, setPhotos] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
   // Категории и их элементы
   const categories = {
-    outerwear: [
+    OUTERWEAR: [
       { id: 1, name: 'Зимняя куртка' },
       { id: 2, name: 'Демисезон' },
       { id: 3, name: 'Пальто' },
       { id: 4, name: 'Ветровка' }
     ],
-    top: [
+    TOP: [
       { id: 1, name: 'Майка' },
       { id: 2, name: 'Футболка' },
       { id: 3, name: 'Водолазка' },
       { id: 4, name: 'Толстовка' }
     ],
-    bottom: [
+    BOTTOM: [
       { id: 1, name: 'Брюки' },
       { id: 2, name: 'Джинсы' },
       { id: 3, name: 'Юбка' },
       { id: 4, name: 'Шорты' }
     ],
-    footwear: [
+    FOOTWEAR: [
       { id: 1, name: 'Кроссовки' },
       { id: 2, name: 'Ботинки' },
       { id: 3, name: 'Туфли' },
       { id: 4, name: 'Сандалии' }
     ],
-    headwear: [
+    HEADWEAR: [
       { id: 1, name: 'Шапка' },
       { id: 2, name: 'Шляпа' },
       { id: 3, name: 'Кепка' }
     ],
-    accessories: [
+    ACCESSORIES: [
       { id: 1, name: 'Шарф' },
       { id: 2, name: 'Перчатки' },
       { id: 3, name: 'Солнечные очки' },
@@ -54,30 +57,81 @@ function CatalogPage() {
   const currentCategory = location.state?.category || 'bottom';
   const categoryItems = categories[currentCategory] || [];
   const categoryTitles = {
-    outerwear: 'ВЕРХНЯЯ ОДЕЖДА',
-    top: 'ВЕРХ',
-    bottom: 'НИЗ',
-    footwear: 'ОБУВЬ',
-    headwear: 'ГОЛОВНЫЕ УБОРЫ',
-    accessories: 'АКСЕССУАРЫ'
+    OUTERWEAR: 'ВЕРХНЯЯ ОДЕЖДА',
+    TOP: 'ВЕРХ',
+    BOTTOM: 'НИЗ',
+    FOOTWEAR: 'ОБУВЬ',
+    HEADWEAR: 'ГОЛОВНЫЕ УБОРЫ',
+    ACCESSORIES: 'АКСЕССУАРЫ'
   };
 
   // Устанавливаем выбранный элемент при загрузке
   useEffect(() => {
-    if (location.state?.itemId) {
-      setSelectedItem(location.state.itemId);
-    }
-  }, [location.state]);
+    const loadWardrobe = async () => {
+      try {
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        const response = await fetch(`http://localhost:8080/api/wardrobe/${currentCategory}`, {
+          headers: { 
+            'Authorization': `Bearer ${token}` 
+          }
+        });
+
+        if (!response.ok) throw new Error('Ошибка загрузки гардероба');
+        
+        const data = await response.json();
+        setPhotos(data.map(item => ({
+          ...item,
+          preview: `http://localhost:8080/uploads/${item.filePath.split('/').pop()}`
+        })));
+        
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadWardrobe();
+  }, [currentCategory]);
 
   const handleItemSelect = (itemId) => {
     setSelectedItem(itemId);
   };
 
- const handleAddClick = () => {
-    if (selectedItem && tempPhoto) {
-      // Переносим фото из временного в постоянное хранилище
-      setPhotos([...photos, tempPhoto]);
-      setTempPhoto(null); // Очищаем временное фото
+ const handleAddClick = async () => {
+    if (!selectedItem || !tempPhoto) return;
+
+    const formData = new FormData();
+    formData.append('file', tempPhoto.file);
+    formData.append('category', currentCategory.toUpperCase());
+    formData.append('itemType', categoryItems.find(item => item.id === selectedItem).name);
+
+    try {
+      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+      const response = await fetch('http://localhost:8080/api/wardrobe', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Ошибка сервера');
+      }
+
+      const newItem = await response.json();
+      setPhotos(prev => [...prev, {
+        ...newItem,
+        preview: `http://localhost:8080/uploads/${newItem.filePath.split('/').pop()}`
+      }]);
+      setTempPhoto(null);
+      fileInputRef.current.value = '';
+
+    } catch (error) {
+      console.error('Ошибка:', error);
+      alert(error.message);
     }
   };
 

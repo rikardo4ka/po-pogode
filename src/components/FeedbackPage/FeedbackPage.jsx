@@ -137,7 +137,7 @@ function FeedbackPage() {
           {/* Аксессуары (2 элемента) */}
           {[1, 2].map(item => (
             <div 
-              key={item}
+              key={item} 
               className="photo-item small" 
               onClick={() => navigate('/feedback_catalog', { state: { category: 'accessories' } })}
             >
