@@ -1,23 +1,73 @@
-import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './CatalogPage.css';
 
 function CatalogPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedItem, setSelectedItem] = useState(null);
-  const [tempPhoto, setTempPhoto] = useState(null); // Временное фото для preview
-  const [photos, setPhotos] = useState([]); // Постоянные фото в сетке
+  const [tempPhoto, setTempPhoto] = useState(null);
+  const [photos, setPhotos] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const fileInputRef = useRef(null);
 
-  // Предметы для категории "Низ"
-  const bottomItems = [
-    { id: 1, name: 'Брюки' },
-    { id: 2, name: 'Джинсы' },
-    { id: 3, name: 'Юбка' },
-    { id: 4, name: 'Шорты' },
-    { id: 5, name: 'Утепленные брюки' }
-  ];
+  // Категории и их элементы
+  const categories = {
+    outerwear: [
+      { id: 1, name: 'Зимняя куртка' },
+      { id: 2, name: 'Демисезон' },
+      { id: 3, name: 'Пальто' },
+      { id: 4, name: 'Ветровка' }
+    ],
+    top: [
+      { id: 1, name: 'Майка' },
+      { id: 2, name: 'Футболка' },
+      { id: 3, name: 'Водолазка' },
+      { id: 4, name: 'Толстовка' }
+    ],
+    bottom: [
+      { id: 1, name: 'Брюки' },
+      { id: 2, name: 'Джинсы' },
+      { id: 3, name: 'Юбка' },
+      { id: 4, name: 'Шорты' }
+    ],
+    footwear: [
+      { id: 1, name: 'Кроссовки' },
+      { id: 2, name: 'Ботинки' },
+      { id: 3, name: 'Туфли' },
+      { id: 4, name: 'Сандалии' }
+    ],
+    headwear: [
+      { id: 1, name: 'Шапка' },
+      { id: 2, name: 'Шляпа' },
+      { id: 3, name: 'Кепка' }
+    ],
+    accessories: [
+      { id: 1, name: 'Шарф' },
+      { id: 2, name: 'Перчатки' },
+      { id: 3, name: 'Солнечные очки' },
+      { id: 4, name: 'Зонт' }
+    ]
+  };
+
+  // Определяем текущую категорию
+  const currentCategory = location.state?.category || 'bottom';
+  const categoryItems = categories[currentCategory] || [];
+  const categoryTitles = {
+    outerwear: 'ВЕРХНЯЯ ОДЕЖДА',
+    top: 'ВЕРХ',
+    bottom: 'НИЗ',
+    footwear: 'ОБУВЬ',
+    headwear: 'ГОЛОВНЫЕ УБОРЫ',
+    accessories: 'АКСЕССУАРЫ'
+  };
+
+  // Устанавливаем выбранный элемент при загрузке
+  useEffect(() => {
+    if (location.state?.itemId) {
+      setSelectedItem(location.state.itemId);
+    }
+  }, [location.state]);
 
   const handleItemSelect = (itemId) => {
     setSelectedItem(itemId);
@@ -84,20 +134,20 @@ const handleAddPhotoClick = () => {
               </div>
             ) : (
               <div className="add-photo-placeholder">
-                <span className="plus-icon">+</span>
-                <span>Добавить фото</span>
+                <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
               </div>
             )}
           </div>
           
           <div className="category-selection">
-            <h2 className="category-title">НИЗ</h2>
+            <h2 className="category-title">{categoryTitles[currentCategory]}</h2>
+            
             <div className="radio-items">
-              {bottomItems.map(item => (
+              {categoryItems.map(item => (
                 <label key={item.id} className="radio-item">
                   <input
                     type="radio"
-                    name="bottomItem"
+                    name="categoryItem"
                     value={item.id}
                     checked={selectedItem === item.id}
                     onChange={() => handleItemSelect(item.id)}
@@ -109,7 +159,6 @@ const handleAddPhotoClick = () => {
             </div>
           </div>
         </div>
-
         <div className="action-buttons">
           <button className="back-button-ctgr" onClick={handleBackClick}>
             НАЗАД
@@ -150,7 +199,7 @@ const handleAddPhotoClick = () => {
               onClick={handlePrevPage}
               disabled={currentPage === 0}
             >
-              <img src={process.env.PUBLIC_URL + "/pic/стрелка.png"} alt="Назад" />
+              <img src={process.env.PUBLIC_URL + "/pic/Кнопка_Лист_Назад_.png"} alt="Назад" />
             </button>
             <span className="page-number">Страница {currentPage + 1}</span>
             <button 
@@ -158,7 +207,7 @@ const handleAddPhotoClick = () => {
               onClick={handleNextPage}
               disabled={(currentPage + 1) * 4 >= photos.length}
             >
-              <img src={process.env.PUBLIC_URL + "/pic/стрелка.png"} alt="Вперед" />
+              <img src={process.env.PUBLIC_URL + "/pic/Кнопка_Лист_Назад_.png"} alt="Вперед"/>
             </button>
           </div>
         )}

@@ -116,8 +116,24 @@ function WardrobePage() {
   };
 
   const handleAddPhotoClick = () => {
-     navigate('/catalog');
+  if (!selectedItem) return;
+  
+  const categoryMap = {
+    0: 'outerwear',
+    1: 'top',
+    2: 'bottom', 
+    3: 'footwear',
+    4: 'headwear',
+    5: 'accessories'
   };
+  
+  navigate('/catalog', { 
+    state: { 
+      category: categoryMap[currentView.category],
+      itemId: selectedItem
+    }
+  });
+};
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
