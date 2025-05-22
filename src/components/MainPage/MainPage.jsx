@@ -9,7 +9,7 @@ function MainPage() {  // Убрали export default отсюда
     setTimeout(() => navigate('/login'), 500);
   };
     const handleWardrobeClick = () => {
-  navigate('/weather'); // Убрали проверку авторизации
+  navigate('/weather'); 
 
   };
 

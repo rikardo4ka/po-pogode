@@ -1,23 +1,122 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom'; // Добавлен useLocation
 import './FeedbackPage.css';
-import '../CatalogPage/CatalogPage.css';  // Подняться на уровень выше и зайти в CatalogPage
+import '../CatalogPage/CatalogPage.css';
 
 function FeedbackPage() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [feedbackText, setFeedbackText] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Состояние для выбранных фотографий
+  const [selectedPhotos, setSelectedPhotos] = useState({
+    upperClothing: null,
+    upper: null,
+    lower: null,
+    footwear: null,
+    headwear: null,
+    accessories: [null, null]
+  });
+
+  // Обновление состояния при возврате из каталога
+  useEffect(() => {
+    if (location.state?.selectedPhotos) {
+      setSelectedPhotos(location.state.selectedPhotos);
+    }
+  }, [location.state]);
 
   const handleStarClick = (starValue) => {
     setRating(starValue);
   };
 
-  const handleSubmit = () => {
-    // Здесь можно добавить логику отправки отзыва
-    console.log('Отправлен отзыв:', { rating, feedbackText });
-    // Перенаправление после отправки
-    navigate('/feedback-thank-you'); // Можно создать отдельную страницу благодарности
+const handleSubmit = async () => {
+  try {
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
+    // Валидация данных
+    if (!rating || rating < 1 || rating > 5) {
+      alert('Пожалуйста, выберите оценку от 1 до 5 звезд');
+      return;
+    }
+
+    if (!feedbackText.trim()) {
+      alert('Пожалуйста, напишите текст отзыва');
+      return;
+    }
+    
+    const sanitizedItems = Object.entries(selectedPhotos).reduce((acc, [key, value]) => {
+      if (value) {
+        // Обрабатываем массив accessories отдельно
+        if (key === 'accessories') {
+          acc[key] = value.map(item => 
+            item ? String(item).split('/').pop() : null
+          );
+        } else {
+          acc[key] = String(value).split('/').pop();
+        }
+      }
+      return acc;
+    }, {});
+
+    const response = await fetch('http://localhost:8080/api/feedback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        rating: rating,
+        text: feedbackText,
+        items: JSON.stringify(sanitizedItems)
+      })
+    });
+    
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Ошибка сервера');
+    }
+
+    navigate('/weather');
+  } catch (error) {
+    console.error('Ошибка:', error);
+    alert(error.message || 'Ошибка при отправке отзыва');
+  }
+};
+  // Функция отображения фото/плейсхолдера
+  const renderPhoto = (category, index = -1) => {
+    const photoUrl = index >= 0 
+      ? selectedPhotos.accessories[index]
+      : selectedPhotos[category];
+
+    if (photoUrl) {
+      return (
+        <img 
+          src={photoUrl} 
+          alt="Selected item" 
+          className="selected-photo"
+        />
+      );
+    }
+    
+    // Возвращаем плейсхолдер если фото нет
+    return (
+      <div className="add-photo-placeholder">
+        <span className="plus-icon">
+          <img 
+            src={process.env.PUBLIC_URL + "/pic/Кнопка_ДобавитьФото_.png"} 
+            alt="Добавить фото" 
+          />
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -67,90 +166,102 @@ function FeedbackPage() {
           </button>
         </div>
       </div>
-      
-     {/* Правая часть - фотографии */}
-<div 
-  className="feedback-photos"
-  style={{ 
-    backgroundImage: `url(${process.env.PUBLIC_URL + '/фоны/Фон_Отзыв_Каталог.png'})` 
-  }}
->
-  <div className="feedback-gallery">
-    {/* Верхний ряд - 2 больших прямоугольника */}
-    <div className="gallery-row top-row">
+
+      {/* Правая часть - фотографии */}
       <div 
-        className="photo-item large" 
-        onClick={() => navigate('/feedback_catalog', { state: { category: 'upperClothing' } })}
+        className="feedback-photos"
+        style={{ 
+          backgroundImage: `url(${process.env.PUBLIC_URL + '/фоны/Фон_Отзыв_Каталог.png'})` 
+        }}
       >
-        <div className="add-photo-placeholder">
-          <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
-          <span>Добавить фото</span>
-        </div>
-      </div>
-      <div 
-        className="photo-item large" 
-        onClick={() => navigate('/feedback_catalog', { state: { category: 'upper' } })}
-      >
-        <div className="add-photo-placeholder">
-          <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
-          <span>Добавить фото</span>
-        </div>
-      </div>
-    </div>
-    
-    {/* Нижний ряд */}
-    <div className="gallery-row bottom-row">
-      {/* Левый большой прямоугольник (низ) */}
-      <div 
-        className="photo-item large" 
-        onClick={() => navigate('/feedback_catalog', { state: { category: 'lower' } })}
-      >
-        <div className="add-photo-placeholder">
-          <span className="plus-icon">+</span>
-        </div>
-      </div>
-      
-      {/* Правый столбец */}
-      <div className="right-column">
-        {/* Средний прямоугольник (обувь) */}
-        <div 
-          className="photo-item medium" 
-          onClick={() => navigate('/feedback_catalog', { state: { category: 'footwear' } })}
-        >
-          <div className="add-photo-placeholder">
-            <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
-          </div>
-        </div>
-        
-        {/* Нижние 3 маленьких прямоугольника */}
-        <div className="small-items-row">
-          {/* Головной убор */}
-          <div 
-            className="photo-item small" 
-            onClick={() => navigate('/feedback_catalog', { state: { category: 'headwear' } })}
-          >
-            <div className="add-photo-placeholder">
-              <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
+        <div className="feedback-gallery">
+          {/* Верхний ряд */}
+          <div className="gallery-row top-row">
+            <div 
+              className="photo-item large" 
+              onClick={() => navigate('/feedback_catalog', { 
+                state: { 
+                  category: 'upperClothing',
+                  selectedPhotos 
+                } 
+              })}
+            >
+              {renderPhoto('upperClothing')}
+            </div>
+            <div 
+              className="photo-item large" 
+              onClick={() => navigate('/feedback_catalog', { 
+                state: { 
+                  category: 'upper',
+                  selectedPhotos 
+                } 
+              })}
+            >
+              {renderPhoto('upper')}
             </div>
           </div>
           
-          {/* Аксессуары (2 элемента) */}
-          {[1, 2].map(item => (
+          {/* Нижний ряд */}
+          <div className="gallery-row bottom-row">
             <div 
-              key={item} 
-              className="photo-item small" 
-              onClick={() => navigate('/feedback_catalog', { state: { category: 'accessories' } })}
+              className="photo-item large" 
+              onClick={() => navigate('/feedback_catalog', { 
+                state: { 
+                  category: 'lower',
+                  selectedPhotos 
+                } 
+              })}
             >
-              <div className="add-photo-placeholder">
-                <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
+              {renderPhoto('lower')}
+            </div>
+            
+            <div className="right-column">
+              <div 
+                className="photo-item medium" 
+                onClick={() => navigate('/feedback_catalog', { 
+                  state: { 
+                    category: 'footwear',
+                    selectedPhotos 
+                  } 
+                })}
+              >
+                {renderPhoto('footwear')}
+              </div>
+              
+              <div className="small-items-row">
+                <div 
+                  className="photo-item small" 
+                  onClick={() => navigate('/feedback_catalog', { 
+                    state: { 
+                      category: 'headwear',
+                      selectedPhotos 
+                    } 
+                  })}
+                >
+                  {renderPhoto('headwear')}
+                </div>
+                
+                {/* Аксессуары с индексами */}
+              {[0, 1].map(index => (
+          <div 
+    key={index}
+    className="photo-item small" 
+    onClick={() => navigate('/feedback_catalog', { 
+      state: { 
+        category: 'accessories',
+        accessoryIndex: index, // Добавлен индекс
+        selectedPhotos 
+      } 
+             })}
+        >
+          {renderPhoto('accessories', index)}
+          </div>
+          ))}
               </div>
             </div>
-          ))}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
     </div>
   );
 }

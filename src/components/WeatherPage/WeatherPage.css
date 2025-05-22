@@ -1,10 +1,12 @@
 .weather-page {
-    /* max-width: 800px; */
+   
     font-family: Arial, sans-serif;
     display: flex;
     height: 100vh;
   overflow: hidden;
   font-family: 'Inter' serif;
+  box-sizing: border-box;
+  
   }
   .weather-bg{
     position: absolute;
@@ -606,4 +608,31 @@
 .city-dropdown-item.active {
   background: #e0f7fa;
   color: #000;
+}
+
+.outfit-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.category-items {
+  display: flex;
+  gap: 5px;
+}
+
+.item-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.item-thumbnail:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }

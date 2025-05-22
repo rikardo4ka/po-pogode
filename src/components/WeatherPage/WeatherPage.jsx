@@ -23,7 +23,7 @@ function WeatherPage() {
   const navigate = useNavigate();
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   
-  useEffect(() => {
+useEffect(() => {
     const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     const user = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
     setIsLoggedIn(!!token);
@@ -32,9 +32,66 @@ function WeatherPage() {
         name: user.name || 'Пользователь' // Устанавливаем имя пользователя
       });
     }
+    if (token) {
+      // Применяем масштаб 110% когда пользователь авторизован
+      document.documentElement.style.zoom = '110%';
+      document.body.style.zoom = '100%';
+    } else {
+      // Возвращаем обычный масштаб при выходе
+      document.documentElement.style.zoom = '100%';
+      document.body.style.zoom = '100%';
+    }
+    
+    if (user) {
+      setUserData({
+        name: user.name || 'Пользователь'
+      });
+    }
+
+    // Очистка при размонтировании компонента
+    return () => {
+      document.documentElement.style.zoom = '100%';
+      document.body.style.zoom = '100%';
+    };
   }, []);
 
+useEffect(() => {
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/feedback');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      setReviews(data.map(review => {
+        const items = JSON.parse(review.items);
+        
+        const photoEntry = Object.entries(items).find(([_, value]) => value);
+        const photoPath = photoEntry 
+          ? `http://localhost:8080/uploads/${photoEntry[1]}`
+          : process.env.PUBLIC_URL + '/pic/review-placeholder.jpg';
 
+        return {
+          ...review,
+          author: review.user?.name || 'Анонимный пользователь',
+          photo: photoPath,
+          time: new Date(review.createdAt).toLocaleTimeString('ru-RU', {
+            hour: '2-digit',
+            minute: '2-digit'
+          })
+        };
+      }));
+    } catch (error) {
+      console.error('Ошибка загрузки отзывов:', error);
+      alert('Не удалось загрузить отзывы');
+    }
+  };
+
+  fetchReviews();
+}, []);
 
   const handleProfileClick = () => {
     setShowProfileMenu(!showProfileMenu);
@@ -136,7 +193,7 @@ function WeatherPage() {
       reader.readAsDataURL(file);
     }
   };
-
+  
   // Handle review submission
   const handleSubmitReview = () => {
     if (newReview.text.trim() === '' || newReview.rating === 0) return;
@@ -197,7 +254,7 @@ function WeatherPage() {
     
     return process.env.PUBLIC_URL + '/иконки_погоды/облачно.png';
   };
-
+  
   useEffect(() => {
     const API_KEY = '6a93e74d69182916e85c3f13ee1b43ce';
     const { lat, lon } = cities[selectedCity];
@@ -447,94 +504,84 @@ function WeatherPage() {
           
           <h3>Отзывы</h3>
           
-          {/* New Review Form */}
-          {isLoggedIn && (
-            <div className="new-review">
-              <div className="review-photo-upload">
-                <label htmlFor="review-photo">
-                  {newReview.preview ? (
-                    <img src={newReview.preview} alt="Preview" className="review-photo-preview" />
-                  ) : (
-                    <div className="upload-placeholder">
-                      <span>+</span>
-                      <p>Добавить фото</p>
-                    </div>
-                  )}
-                </label>
-                <input
-                  id="review-photo"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  style={{ display: 'none' }}
-                />
-              </div>
-              <div className="review-content">
-                <div className="review-rating">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span
-                      key={star}
-                      className={`star ${star <= newReview.rating ? 'filled' : ''}`}
-                      onClick={() => setNewReview({...newReview, rating: star})}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <textarea
-                  className="review-textarea"
-                  placeholder="Напишите ваш отзыв..."
-                  value={newReview.text}
-                  onChange={(e) => setNewReview({...newReview, text: e.target.value})}
-                />
-                <button 
-                  className="submit-review-button"
-                  onClick={handleSubmitReview}
-                  disabled={!newReview.text || newReview.rating === 0}
-                >
-                  Опубликовать
-                </button>
-              </div>
-            </div>
-          )}
+        
           
-          <div className="reviews-scrollable">
-        {reviews.map((review) => (
-          <div key={review.id} className="review">
-            <div className="review-content-wrapper">
-              <div className="review-text-content">
-                <div className="review-header">
-                  <span className="review-author">
-                    {review.author} {Array(review.rating).fill('★').join('')}
-                  </span>
-                  <span className="review-time">{review.time}</span>
-                </div>
-                <p className="review-text">{review.text}</p>
-                {review.recommendation && (
-                  <p className="review-recommendation">{review.recommendation}</p>
-                )}
-              </div>
-              {review.photo && (
-                <div className="review-photo-container" onClick={() => openPhotoModal(review.photo)}>
-                  <img src={review.photo} alt="Review" className="review-photo" />
-                </div>
-              )}
-            </div>
+          <div className="reviews-scrollable">  
+  
+       {reviews.map((review) => {
+  const items = review.items ? JSON.parse(review.items) : {};
+  
+  return (
+    <div key={review.id} className="review">
+      <div className="review-content-wrapper">
+        <div className="review-text-content">
+          <div className="review-header">
+            <span className="review-author">
+              {review.author} {Array(review.rating).fill('★').join('')}
+            </span>
+            <span className="review-time">{review.time}</span>
           </div>
-        ))}
+          
+          {/* Блок с миниатюрами одежды */}
+          <div className="outfit-preview">
+            {Object.entries(items).map(([category, value]) => {
+              if (!value || (Array.isArray(value) && value.every(v => !v))) return null;
+
+              return (
+                <div key={category} className="category-items">
+                  {category === 'accessories' ? (
+                    value.map((item, index) => (
+                      item && (
+                        <img
+                          key={`${category}-${index}`}
+                          src={`http://localhost:8080/uploads/${item}`}
+                          alt={`Аксессуар ${index + 1}`}
+                          className="item-thumbnail"
+                          onClick={() => openPhotoModal(item)}
+                        />
+                      )
+                    ))
+                  ) : (
+                    <img
+                      src={`http://localhost:8080/uploads/${value}`}
+                      alt={category}
+                      className="item-thumbnail"
+                      onClick={() => openPhotoModal(value)}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <p className="review-text">{review.text}</p>
+          {review.recommendation && (
+            <p className="review-recommendation">{review.recommendation}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+})}
       </div>
 
       {/* Photo Modal */}
-      {selectedPhoto && (
-        <div className="photo-modal-overlay" onClick={closePhotoModal}>
-          <div className="photo-modal-content" onClick={e => e.stopPropagation()}>
-            <button className="close-modal-btn" onClick={closePhotoModal}>×</button>
-            <img src={selectedPhoto} alt="Увеличенное фото" className="enlarged-photo" />
-          </div>
-        </div>
+     {selectedPhoto && (
+  <div className="photo-modal-overlay" onClick={closePhotoModal}>
+    <div className="photo-modal-content">
+      <button className="close-modal-btn" onClick={closePhotoModal}>×</button>
+      <img 
+        src={selectedPhoto.startsWith('http') 
+          ? selectedPhoto 
+          : `http://localhost:8080/uploads/${selectedPhoto}`} 
+        alt="Увеличенное фото" 
+        className="enlarged-photo"
+      />
+    </div>
+  </div>
       )}
-    </div>
-    </div>
+        </div>
+      </div>
     </div>
   );
 }

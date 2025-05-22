@@ -91,10 +91,10 @@
 /* Пример позиционирования иконок - вы можете изменить по своему усмотрению */
 .wardrobe-icon-button:nth-child(1) { top: 278px; right: 214px; }
 .wardrobe-icon-button:nth-child(2) { top: 278px; right: 591px; }
-.wardrobe-icon-button:nth-child(3) { top: 278px; left: 750px; }
-.wardrobe-icon-button:nth-child(4) { bottom: -20px; left: 750px; }
+.wardrobe-icon-button:nth-child(3) { bottom: -20px; left: 400px; }
+.wardrobe-icon-button:nth-child(4) { bottom: -40px; left: 750px; }
 .wardrobe-icon-button:nth-child(5) { bottom: 210px; left: 750px; }
-.wardrobe-icon-button:nth-child(6) { bottom: -20px; left: 400px; }
+.wardrobe-icon-button:nth-child(6) { top: 578px; left: 750px; }
 
 .items-selection-container {
   font-family: 'Inter'serif;

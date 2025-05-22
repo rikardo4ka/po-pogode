@@ -75,7 +75,7 @@ function RegisterPage() {
             />
           </div>
           
-          <div className="reg-input">
+          <div className="reg-input select" >
             <span className="reg-text">Пол</span>
             <select 
               name="sex"

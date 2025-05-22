@@ -16,19 +16,19 @@ function CatalogPage() {
 
   // Категории и их элементы
   const categories = {
-    outerwear: [
+    OUTERWEAR: [
       { id: 1, name: 'Зимняя куртка' },
       { id: 2, name: 'Демисезон' },
       { id: 3, name: 'Пальто' },
       { id: 4, name: 'Ветровка' }
     ],
-    top: [
+    TOP: [
       { id: 1, name: 'Майка' },
       { id: 2, name: 'Футболка' },
       { id: 3, name: 'Водолазка' },
       { id: 4, name: 'Толстовка' }
     ],
-    bottom: [
+    BOTTOM: [
       { id: 1, name: 'Брюки' },
       { id: 2, name: 'Джинсы' },
       { id: 3, name: 'Юбка' },
@@ -40,12 +40,12 @@ function CatalogPage() {
       { id: 3, name: 'Туфли' },
       { id: 4, name: 'Сандалии' }
     ],
-    headwear: [
+    HEADWEAR: [
       { id: 1, name: 'Шапка' },
       { id: 2, name: 'Шляпа' },
       { id: 3, name: 'Кепка' }
     ],
-    accessories: [
+    ACCESSORIES: [
       { id: 1, name: 'Шарф' },
       { id: 2, name: 'Перчатки' },
       { id: 3, name: 'Солнечные очки' },
@@ -60,7 +60,7 @@ function CatalogPage() {
     OUTERWEAR: 'ВЕРХНЯЯ ОДЕЖДА',
     TOP: 'ВЕРХ',
     BOTTOM: 'НИЗ',
-    FOOTWEAR: 'ОБУВЬ',
+    footwear: 'ОБУВЬ',
     HEADWEAR: 'ГОЛОВНЫЕ УБОРЫ',
     ACCESSORIES: 'АКСЕССУАРЫ'
   };
@@ -71,6 +71,7 @@ function CatalogPage() {
       try {
         const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
         const response = await fetch(`http://localhost:8080/api/wardrobe/${currentCategory}`, {
+          
           headers: { 
             'Authorization': `Bearer ${token}` 
           }

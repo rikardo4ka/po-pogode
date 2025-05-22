@@ -9,14 +9,16 @@ function FeedbackCatalogPage() {
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedPhotos, setSelectedPhotos] = useState({
-    upperClothing: null,
-    upper: null,
-    lower: null,
-    footwear: null,
-    headwear: null,
-    accessories: [null, null]
-  });
+    const [selectedPhotos, setSelectedPhotos] = useState(
+    location.state?.selectedPhotos || {
+      upperClothing: null,
+      upper: null,
+      lower: null,
+      footwear: null,
+      headwear: null,
+      accessories: [null, null]
+    }
+  );
 
   // Маппинг категорий фронтенда на бэкенд
   const categoryMapping = {
@@ -76,38 +78,39 @@ function FeedbackCatalogPage() {
     setCurrentPage(prev => (photos.length > (prev + 1) * 4 ? prev + 1 : prev));
   };
 
-    const handlePhotoSelect = (photo, index) => {
-    if (location.state?.accessoryIndex !== undefined) {
-      const newAccessories = [...selectedPhotos.accessories];
-      newAccessories[index] = photo.preview;
-      setSelectedPhotos(prev => ({
-        ...prev,
-        accessories: newAccessories
-      }));
+     const handlePhotoSelect = (photo) => {
+    const updatedPhotos = { ...selectedPhotos };
+    const accessoryIndex = location.state?.accessoryIndex;
+
+    if (typeof accessoryIndex === 'number') {
+      updatedPhotos.accessories[accessoryIndex] = photo.preview;
     } else {
-      setSelectedPhotos(prev => ({
-        ...prev,
-        [category]: photo.preview
-      }));
+      updatedPhotos[category] = photo.preview;
     }
+
+    navigate('/feedback', { 
+      state: { 
+        selectedPhotos: updatedPhotos 
+      } 
+    });
   };
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
 
-  const renderPhotoPlaceholder = (category, index = -1) => {
+  const renderPhotoPlaceholder = (currentCategory, index = -1) => {
     let photoUrl;
-    if (category === 'accessories') {
+    if (currentCategory === 'accessories') {
       photoUrl = selectedPhotos.accessories[index];
     } else {
-      photoUrl = selectedPhotos[category];
+      photoUrl = selectedPhotos[currentCategory];
     }
 
     if (photoUrl) {
       return (
         <div className="photo-container">
           <img 
-            src={process.env.PUBLIC_URL + photoUrl} 
+            src={photoUrl} // Убрать process.env.PUBLIC_URL
             alt="Выбранный предмет" 
             className="selected-photo"
             style={{
@@ -120,6 +123,7 @@ function FeedbackCatalogPage() {
         </div>
       );
     }
+    
      return (
       <div 
         className="add-photo-placeholder"
@@ -228,16 +232,21 @@ function FeedbackCatalogPage() {
                   {renderPhotoPlaceholder('headwear')}
                 </div>
                 
-                {/* Аксессуары (2 элемента) */}
-                {[1, 2].map(item => (
-                  <div 
-                    key={item}
-                    className="photo-item small" 
-                    onClick={() => navigate('/feedback_catalog', { state: { category: 'accessories' } })}
-                  >
-                    {renderPhotoPlaceholder('accessories')}
-                  </div>
-                ))}
+               {[0, 1].map(index => (
+  <div 
+    key={index}
+    className="photo-item small" 
+    onClick={() => navigate('/feedback_catalog', { 
+      state: { 
+        category: 'accessories',
+        accessoryIndex: index,
+        selectedPhotos 
+      } 
+    })}
+  >
+    {renderPhotoPlaceholder('accessories', index)}
+  </div>
+))}
               </div>
             </div>
           </div>

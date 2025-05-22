@@ -24,7 +24,7 @@
 }
 
 .feedback-content {
-  max-width: 400px;
+  max-width: 800px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -34,15 +34,20 @@
 
 .feedback-title {
   text-align: center;
-  font-size: 24px;
+  font-size: 32px;
   margin-bottom: 40px;
   color: #333;
   line-height: 1.4;
 }
 
 .star-rating {
+  display: flex;
+  justify-content: flex-start;
   margin-bottom: 30px;
   font-size: 0;
+  gap: 5px;
+
+  width: 100%;
 }
 
 .star {
@@ -54,34 +59,39 @@
 }
 
 .star.gold {
-  color: gold;
+  color: gold; 
 }
 
 .feedback-textarea {
   width: 100%;
-  height: 150px;
+  height: 300px;
   padding: 15px;
   margin-bottom: 30px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background-color: #dfdfdf ;
+  border: 2px solid #070707;
+  border-radius: 30px;
   resize: none;
   font-size: 16px;
 }
 
 .submit-button {
-  background-color: #4a90e2;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  font-size: 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+ width: 232px;
+    height: 64px;
+    background-color: #000;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-family: 'Inter'serif;
+    font-weight: 400;
+    font-size: 24px;
+    transition: all 0.3s;
 }
 
 .submit-button:hover {
-  background-color: #357ab8;
-}
+    background-color: #333;
+    transform: translateY(-2px);
+  }
 
 .feedback-photos {
   flex: 1;
@@ -145,11 +155,14 @@
 
 .gallery-row {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .top-row {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 10px 1fr; /* Добавляем промежуток 10px */
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 .middle-row {
