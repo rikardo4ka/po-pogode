@@ -14,8 +14,8 @@ function WardrobePage() {
     outerwear: process.env.PUBLIC_URL + '/фоны/гардероб_верхОдежда.png',
     top: process.env.PUBLIC_URL + '/фоны/гардероб_верх.png',
     bottom: process.env.PUBLIC_URL + '/фоны/гардероб_низ.png',
-    shoes: process.env.PUBLIC_URL + '/фоны/гардероб_обувь.png',
-    hats: process.env.PUBLIC_URL + '/фоны/гардероб_голова.png',
+    footwear: process.env.PUBLIC_URL + '/фоны/гардероб_обувь.png',
+    headwear: process.env.PUBLIC_URL + '/фоны/гардероб_голова.png',
     accessories: process.env.PUBLIC_URL + '/фоны/гардероб_аксессуары.png'
   };
 
@@ -116,16 +116,17 @@ function WardrobePage() {
   };
 
   const handleAddPhotoClick = () => {
-    if (!selectedItem) return;
-    
-    const categoryMap = {
-      0: 'OUTERWEAR',
-      1: 'TOP',
-      2: 'BOTTOM',
-      3: 'FOOTWEAR',
-      4: 'HEADWEAR',
-      5: 'ACCESSORIES'
-    };
+  if (!selectedItem) return;
+  
+  const categoryMap = {
+    0: 'outerwear',
+    1: 'top',
+    2: 'bottom', 
+    3: 'footwear',
+    4: 'headwear',
+    5: 'accessories'
+  };
+  
   navigate('/catalog', { 
     state: { 
       category: categoryMap[currentView.category],
@@ -149,8 +150,8 @@ function WardrobePage() {
       case 0: return backgrounds.outerwear;
       case 1: return backgrounds.top;
       case 2: return backgrounds.bottom;
-      case 3: return backgrounds.shoes;
-      case 4: return backgrounds.hats;
+      case 3: return backgrounds.footwear;
+      case 4: return backgrounds.headwear;
       case 5: return backgrounds.accessories;
       default: return backgrounds.main;
     }

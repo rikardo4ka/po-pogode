@@ -16,36 +16,36 @@ function CatalogPage() {
 
   // Категории и их элементы
   const categories = {
-    OUTERWEAR: [
+    outerwear: [
       { id: 1, name: 'Зимняя куртка' },
       { id: 2, name: 'Демисезон' },
       { id: 3, name: 'Пальто' },
       { id: 4, name: 'Ветровка' }
     ],
-    TOP: [
+    top: [
       { id: 1, name: 'Майка' },
       { id: 2, name: 'Футболка' },
       { id: 3, name: 'Водолазка' },
       { id: 4, name: 'Толстовка' }
     ],
-    BOTTOM: [
+    bottom: [
       { id: 1, name: 'Брюки' },
       { id: 2, name: 'Джинсы' },
       { id: 3, name: 'Юбка' },
       { id: 4, name: 'Шорты' }
     ],
-    FOOTWEAR: [
+    footwear: [
       { id: 1, name: 'Кроссовки' },
       { id: 2, name: 'Ботинки' },
       { id: 3, name: 'Туфли' },
       { id: 4, name: 'Сандалии' }
     ],
-    HEADWEAR: [
+    headwear: [
       { id: 1, name: 'Шапка' },
       { id: 2, name: 'Шляпа' },
       { id: 3, name: 'Кепка' }
     ],
-    ACCESSORIES: [
+    accessories: [
       { id: 1, name: 'Шарф' },
       { id: 2, name: 'Перчатки' },
       { id: 3, name: 'Солнечные очки' },

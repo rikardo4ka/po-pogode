@@ -8,13 +8,13 @@ function MainPage() {  // Убрали export default отсюда
     document.getElementById('mainContent').style.animation = 'fadeOut 0.5s forwards';
     setTimeout(() => navigate('/login'), 500);
   };
-  const handleWeatherClick = () => {
-    navigate('/weather');
+    const handleWardrobeClick = () => {
+  navigate('/weather'); // Убрали проверку авторизации
+
   };
 
-  const handleWardrobeClick = () => {
-    navigate('/wardrobe');
-  };
+
+  
   return (
     <div id="mainContent" className="main-page">
       <header className="header">
@@ -37,7 +37,7 @@ function MainPage() {  // Убрали export default отсюда
             </div>
             <button 
         className="main-button" 
-        onClick={handleWeatherClick}>ПОСМОТРЕТЬ ГОТОВЫЕ ОБРАЗЫ</button>
+        onClick={handleWardrobeClick}>ПОСМОТРЕТЬ ГОТОВЫЕ ОБРАЗЫ</button>
             <div className="header-people">
               <img src="/pic/люди.png" alt="" />
             </div>

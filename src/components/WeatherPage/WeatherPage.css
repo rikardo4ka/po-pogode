@@ -358,3 +358,252 @@
   .reviews-scrollable::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+.review {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #ababad;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.review-content-wrapper {
+  display: flex;
+  gap: 15px;
+}
+.review-author {
+  font-weight: bold;
+}
+
+.review-time {
+  color: #fff;
+  font-size: 0.9em;
+}
+
+.review-text {
+  margin-bottom: 10px;
+}
+
+.review-photo-container {
+  margin: 10px 0;
+}
+
+.review-photo {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+
+
+  /* Add these styles to your existing WeatherPage.css */
+
+.new-review {
+  display: flex;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f8f8;
+  border-radius: 10px;
+}
+.review-text-content {
+  flex: 1;
+  color: #fff;
+  font-family: 'Inter' serif;
+}
+.review-photo-upload {
+  width: 100px;
+  height: 100px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.upload-placeholder {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  border-radius: 5px;
+}
+
+.upload-placeholder span {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.upload-placeholder p {
+  margin: 0;
+  font-size: 12px;
+}
+
+.review-photo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.review-content {
+  flex: 1;
+}
+
+.review-rating {
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 20px;
+  color: #ccc;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.star.filled {
+  color: #ffc107;
+}
+
+.review-textarea {
+  width: 100%;
+  height: 60px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  resize: none;
+  margin-bottom: 10px;
+}
+
+.submit-review-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-review-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.review-photo-container {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.review-photo-container:hover {
+  transform: scale(1.03);
+}
+
+.review-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+
+.review-recommendation {
+  color: #fff;
+  font-size: 0.9em;
+  margin-top: 8px;
+}
+
+/* Стили для модального окна */
+.photo-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.photo-modal-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.enlarged-photo {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+/* Стили для выпадающего списка городов */
+.city-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.city-selector{
+  margin-bottom: 30px;
+}
+.city-dropdown-toggle {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+}
+
+.city-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 100;
+  min-width: 120px;
+}
+
+.city-dropdown-item {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+.city-dropdown-item:hover {
+  background: #f5f5f5;
+}
+
+.city-dropdown-item.active {
+  background: #e0f7fa;
+  color: #000;
+}

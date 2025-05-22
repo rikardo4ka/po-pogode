@@ -190,4 +190,4 @@ function WeatherRecommendationPage() {
   );
 }
 
-export default withAuth(WeatherRecommendationPage);
+export default WeatherRecommendationPage;

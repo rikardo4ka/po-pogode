@@ -1,70 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './FeedbackCatalogPage.css';
 
 function FeedbackCatalogPage() {
-  const navigate = useNavigate();
+   const navigate = useNavigate();
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState(0);
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedPhotos, setSelectedPhotos] = useState({
     upperClothing: null,
     upper: null,
     lower: null,
     footwear: null,
     headwear: null,
-    accessories: null
+    accessories: [null, null]
   });
 
-  // Определяем категорию на основе того, какой элемент был кликнут
-  const getCategory = () => {
-    if (location.state?.category) {
-      return location.state.category;
-    }
-    return 'upper'; // значение по умолчанию
+  // Маппинг категорий фронтенда на бэкенд
+  const categoryMapping = {
+    upperClothing: 'OUTERWEAR',
+    upper: 'TOP',
+    lower: 'BOTTOM',
+    footwear: 'FOOTWEAR',
+    headwear: 'HEADWEAR',
+    accessories: 'ACCESSORIES'
   };
-
-  const category = getCategory();
   
-  // Моковые данные для разных категорий
-  const categoryPhotos = {
-    'upperClothing': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/верх_одежда/демисезон.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/верх_одежда/зимняя_куртка.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/верх_одежда/пальто.png' }
-    ],
-    'upper': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/верх/футболка.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/верх/майка.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/верх/водолазка1.png' },
-      { id: 4, preview: '/одежда_пнг/ж_гард/верх/толстовка.png' },
-      { id: 5, preview: '/одежда_пнг/ж_гард/верх/водолазка2.png' }
-    ],
-    'lower': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/низ/джинсы1.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/низ/джинсы2.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/низ/юбка.png' },
-      { id: 4, preview: '/одежда_пнг/ж_гард/низ/шорты.png' }
-    ],
-    'footwear': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/обувь/кроссовки.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/обувь/ботинки1.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/обувь/туфли.png' },
-      { id: 4, preview: '/одежда_пнг/ж_гард/обувь/сандалии.png' }
-    ],
-    'headwear': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/голова/шапка.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/голова/кепка.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/голова/шляпа.png' }
-    ],
-    'accessories': [
-      { id: 1, preview: '/одежда_пнг/ж_гард/аксессуары/шарф.png' },
-      { id: 2, preview: '/одежда_пнг/ж_гард/аксессуары/перчатки.png' },
-      { id: 3, preview: '/одежда_пнг/ж_гард/аксессуары/очки.png' },
-      { id: 4, preview: '/одежда_пнг/ж_гард/аксессуары/зонт.png' }
-    ]
-  };
 
-  const photos = categoryPhotos[category] || [];
+  // Определяем категорию на основе того, какой элемент был кликнут
+  const getCategory = () => location.state?.category || 'upper';
+  const category = getCategory();
+  const backendCategory = categoryMapping[category];
+  
+    useEffect(() => {
+    const loadWardrobe = async () => {
+      try {
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        const response = await fetch(
+          `http://localhost:8080/api/wardrobe/${backendCategory}`, 
+          {
+            headers: { 
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        if (!response.ok) throw new Error('Failed to load wardrobe');
+        
+        const data = await response.json();
+        setPhotos(data.map(item => ({
+          ...item,
+          preview: `http://localhost:8080/uploads/${item.filePath}`
+        })));
+        
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadWardrobe();
+  }, [backendCategory]);  
+
+ 
 
   const handlePrevPage = () => {
     setCurrentPage(prev => Math.max(prev - 1, 0));
@@ -74,33 +76,65 @@ function FeedbackCatalogPage() {
     setCurrentPage(prev => (photos.length > (prev + 1) * 4 ? prev + 1 : prev));
   };
 
-  const handlePhotoSelect = (photo) => {
-    setSelectedPhotos(prev => ({
-      ...prev,
-      [category]: photo.preview
-    }));
+    const handlePhotoSelect = (photo, index) => {
+    if (location.state?.accessoryIndex !== undefined) {
+      const newAccessories = [...selectedPhotos.accessories];
+      newAccessories[index] = photo.preview;
+      setSelectedPhotos(prev => ({
+        ...prev,
+        accessories: newAccessories
+      }));
+    } else {
+      setSelectedPhotos(prev => ({
+        ...prev,
+        [category]: photo.preview
+      }));
+    }
   };
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-  const renderPhotoPlaceholder = (category) => {
-    if (selectedPhotos[category]) {
+
+  const renderPhotoPlaceholder = (category, index = -1) => {
+    let photoUrl;
+    if (category === 'accessories') {
+      photoUrl = selectedPhotos.accessories[index];
+    } else {
+      photoUrl = selectedPhotos[category];
+    }
+
+    if (photoUrl) {
       return (
-        <img 
-          src={process.env.PUBLIC_URL + selectedPhotos[category]} 
-          alt="Выбранный предмет" 
-          className="selected-photo"
-        />
+        <div className="photo-container">
+          <img 
+            src={process.env.PUBLIC_URL + photoUrl} 
+            alt="Выбранный предмет" 
+            className="selected-photo"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              backgroundColor: 'white'
+            }}
+          />
+        </div>
       );
     }
-    return (
-      <div className="add-photo-placeholder">
-        <span className="plus-icon"><img src="/pic/Кнопка_ДобавитьФото_.png" alt="" /></span>
-        {category === 'upperClothing' || category === 'upper' ? (
-          <span>Добавить фото</span>
-        ) : null}
+     return (
+      <div 
+        className="add-photo-placeholder"
+        style={{ backgroundColor: 'white' }}
+      >
+        <span className="plus-icon">
+          <img 
+            src={process.env.PUBLIC_URL + "/pic/Кнопка_ДобавитьФото_.png"} 
+            alt="Добавить фото" 
+          />
+        </span>
       </div>
     );
   };
-
+  
   return (
     <div className="feedback-catalog-container">
       {/* Левая часть - правая сторона CatalogPage */}
